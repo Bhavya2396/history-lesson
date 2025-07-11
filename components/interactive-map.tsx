@@ -12,6 +12,7 @@ import { type FC, useEffect, useState, useRef, Suspense } from "react"
 const BATTLE_DATA = {
   1526: {
     name: "Battle of Panipat",
+    type: "foundation", // Foundation of Mughal Empire
     center: [29.39, 76.96],
     zoom: 5,
     boundaries: [
@@ -36,7 +37,19 @@ const BATTLE_DATA = {
         size: 8,
         isVictorious: false
       }
-    ]
+    ],
+    foundation: {
+      coronation: {
+        position: [29.39, 76.96],
+        emperor: "Babur",
+        duration: 8000
+      },
+      fort: {
+        position: [29.39, 76.96],
+        type: "victory_fort",
+        name: "Panipat Victory Fort"
+      }
+    }
   },
   1540: {
     name: "Humayun's Defeat and Exile",
@@ -81,6 +94,7 @@ const BATTLE_DATA = {
   },
   1556: {
     name: "Second Battle of Panipat",
+    type: "coronation", // Akbar's ascension to power
     center: [29.39, 76.96],
     zoom: 5,
     boundaries: [
@@ -106,14 +120,19 @@ const BATTLE_DATA = {
         isVictorious: false
       }
     ],
+    coronation: {
+      position: [29.39, 76.96],
+      emperor: "Akbar the Great",
+      duration: 12000,
+      ceremony: {
+        type: "imperial_coronation",
+        symbols: ["crown", "scepter", "throne"]
+      }
+    },
     monument: {
       type: "fort",
       position: [29.39, 76.96],
       name: "Akbar's Victory Fort"
-    },
-    crownPlacement: {
-      position: [29.39, 76.96],
-      delay: 5000 // Crown appears 5 seconds after battle
     }
   },
   1572: {
@@ -144,7 +163,21 @@ const BATTLE_DATA = {
         isVictorious: false
       }
     ],
-    tradeRoute: [[22.3, 71.5], [21.17, 72.83]] // To Surat port
+    conquest: {
+      celebration: {
+        position: [22.3, 71.5],
+        duration: 8000,
+        type: "victory_celebration"
+      },
+      tradeRoute: {
+        route: [[22.3, 71.5], [21.17, 72.83]], // To Surat port
+        port: {
+          position: [21.17, 72.83],
+          name: "Surat Port",
+          development: true
+        }
+      }
+    }
   },
   1582: {
     name: "Din-i Ilahi Proclamation",
@@ -154,10 +187,18 @@ const BATTLE_DATA = {
     boundaries: [
       [26.8, 77.3], [27.4, 77.3], [27.4, 78.0], [26.8, 78.0]
     ],
-    monument: {
-      type: "palace",
-      position: [27.09, 77.66],
-      name: "Fatehpur Sikri"
+    religious: {
+      ceremony: {
+        position: [27.09, 77.66],
+        type: "religious_proclamation",
+        duration: 10000,
+        symbols: ["divine_light", "spiritual_aura", "unity_banner"]
+      },
+      monument: {
+        type: "palace",
+        position: [27.09, 77.66],
+        name: "Fatehpur Sikri"
+      }
     }
   },
   1615: {
@@ -168,18 +209,29 @@ const BATTLE_DATA = {
     boundaries: [
       [26.8, 77.7], [27.5, 77.7], [27.5, 78.4], [26.8, 78.4]
     ],
-    tradeRoute: [
-      [51.5, -0.1], // London
-      [36.1, -5.3], // Gibraltar
-      [30.0, 31.2], // Alexandria
-      [12.8, 45.0], // Aden
-      [21.17, 72.83], // Surat
-      [27.17, 78.04]  // Agra
-    ],
-    monument: {
-      type: "court",
-      position: [27.17, 78.04],
-      name: "Mughal Court at Agra"
+    diplomatic: {
+      ceremony: {
+        position: [27.17, 78.04],
+        type: "diplomatic_meeting",
+        duration: 12000,
+        participants: ["Mughal Emperor", "British Ambassador"]
+      },
+      tradeRoute: {
+        route: [
+          [51.5, -0.1], // London
+          [36.1, -5.3], // Gibraltar
+          [30.0, 31.2], // Alexandria
+          [12.8, 45.0], // Aden
+          [21.17, 72.83], // Surat
+          [27.17, 78.04]  // Agra
+        ],
+        ships: true
+      },
+      monument: {
+        type: "court",
+        position: [27.17, 78.04],
+        name: "Mughal Court at Agra"
+      }
     }
   },
   1632: {
@@ -190,6 +242,23 @@ const BATTLE_DATA = {
     boundaries: [
       [27.1, 77.9], [27.25, 77.9], [27.25, 78.2], [27.1, 78.2]
     ],
+    construction: {
+      phases: [
+        { name: "Foundation", duration: 3000 },
+        { name: "Walls", duration: 3000 },
+        { name: "Dome", duration: 3000 },
+        { name: "Completion", duration: 3000 }
+      ],
+      workers: {
+        position: [27.17, 78.04],
+        count: 12,
+        activity: "building"
+      },
+      materials: {
+        types: ["marble", "precious_stones", "gold"],
+        transport: true
+      }
+    },
     monument: {
       type: "taj",
       position: [27.17, 78.04],
@@ -198,24 +267,30 @@ const BATTLE_DATA = {
   },
   1674: {
     name: "Maratha Coronation",
-    type: "coronation",
+    type: "independence",
     center: [18.23, 73.44],
     zoom: 7,
     boundaries: [
       [17.8, 73.0], [18.6, 73.0], [18.6, 73.9], [17.8, 73.9]
     ],
-    monument: {
-      type: "fort",
-      position: [18.23, 73.44],
-      name: "Raigad Fort"
-    },
-    ceremony: {
-      position: [18.23, 73.44],
-      leader: "Shivaji Maharaj"
+    independence: {
+      ceremony: {
+        position: [18.23, 73.44],
+        type: "independence_declaration",
+        duration: 15000,
+        leader: "Shivaji Maharaj",
+        elements: ["flag_raising", "coronation", "celebration"]
+      },
+      monument: {
+        type: "fort",
+        position: [18.23, 73.44],
+        name: "Raigad Fort"
+      }
     }
   },
   1686: {
     name: "Conquest of Deccan",
+    type: "imperial_expansion",
     center: [17.38, 78.4],
     zoom: 5,
     boundaries: [
@@ -240,22 +315,51 @@ const BATTLE_DATA = {
         size: 12,
         isVictorious: false
       }
-    ]
+    ],
+    expansion: {
+      territory: {
+        position: [17.38, 78.4],
+        marking: true,
+        duration: 8000
+      },
+      victory: {
+        celebration: {
+          position: [17.38, 78.4],
+          type: "imperial_victory",
+          duration: 6000
+        }
+      }
+    }
   },
   1739: {
     name: "Nader Shah's Invasion",
+    type: "invasion",
     center: [28.6, 77.2],
     zoom: 6,
     boundaries: [
       [28.2, 76.8], [29.0, 76.8], [29.0, 77.6], [28.2, 77.6]
     ],
-    type: "loot", // Special type for looting
-    loot: {
-      position: [28.6, 77.2]
-    },
-    devastation: {
-      position: [28.6, 77.2],
-      intensity: 2.0
+    invasion: {
+      sequence: {
+        phases: [
+          { name: "Invasion", duration: 4000 },
+          { name: "Looting", duration: 6000 },
+          { name: "Devastation", duration: 4000 }
+        ]
+      },
+      loot: {
+        position: [28.6, 77.2],
+        types: ["peacock_throne", "kohinoor", "treasure"],
+        transport: {
+          route: [[28.6, 77.2], [32.0, 66.0]], // To Persia
+          duration: 8000
+        }
+      },
+      devastation: {
+        position: [28.6, 77.2],
+        intensity: 2.0,
+        effects: ["destruction", "smoke", "ruins"]
+      }
     }
   },
   1857: {
@@ -610,7 +714,7 @@ const EmperorExile3D: FC<{
       {/* Phase-specific effects */}
       {phase === 'defeat' && (
         <Text
-          position={[0, 0.8, 0]}
+          position={[0, 1.8, 0]}
           fontSize={0.25}
           color="#FF0000"
           anchorX="center"
@@ -624,7 +728,7 @@ const EmperorExile3D: FC<{
       
       {phase === 'journey' && (
         <Text
-          position={[0, 0.8, 0]}
+          position={[0, 1.8, 0]}
           fontSize={0.25}
           color="#FFA500"
           anchorX="center"
@@ -638,7 +742,7 @@ const EmperorExile3D: FC<{
       
       {phase === 'exile' && (
         <Text
-          position={[0, 0.8, 0]}
+          position={[0, 1.8, 0]}
           fontSize={0.25}
           color="#8A2BE2"
           anchorX="center"
@@ -672,6 +776,1654 @@ const EmperorExile3D: FC<{
   )
 }
 
+// Foundation Ceremony for Babur's Coronation
+const Foundation3D: FC<{ 
+  foundationData: any
+  isActive: boolean
+}> = ({ foundationData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'coronation' | 'fort'>('coronation')
+  const [coronationProgress, setCoronationProgress] = useState(0)
+  const [fortProgress, setFortProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Coronation phase
+    const coronationTimer = setTimeout(() => {
+      setPhase('fort')
+      
+      // Start fort construction
+      const fortInterval = setInterval(() => {
+        setFortProgress(prev => {
+          const newProgress = prev + 0.02
+          if (newProgress >= 1) {
+            clearInterval(fortInterval)
+            return 1
+          }
+          return newProgress
+        })
+      }, 100)
+    }, foundationData.coronation.duration)
+    
+    // Coronation animation
+    const coronationInterval = setInterval(() => {
+      setCoronationProgress(prev => {
+        const newProgress = prev + 0.01
+        if (newProgress >= 1) {
+          clearInterval(coronationInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 80)
+    
+    return () => {
+      clearTimeout(coronationTimer)
+      clearInterval(coronationInterval)
+    }
+  }, [isActive, foundationData])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Coronation Phase */}
+      {phase === 'coronation' && (
+        <group>
+          {/* Throne */}
+          <Box args={[0.8, 0.6, 0.4]} position={[0, 0.3, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Box>
+          
+          {/* Emperor Figure */}
+          <Cylinder args={[0.1, 0.12, 0.4]} position={[0, 0.7, 0]}>
+            <meshStandardMaterial color="#10B981" />
+          </Cylinder>
+          <Sphere args={[0.12]} position={[0, 0.95, 0]}>
+            <meshStandardMaterial color="#D2B48C" />
+          </Sphere>
+          
+          {/* Crown */}
+          <Cylinder args={[0.15, 0.12, 0.08]} position={[0, 1.1, 0]}>
+            <meshStandardMaterial 
+              color="#FFD700" 
+              emissive="#FFD700" 
+              emissiveIntensity={0.3}
+            />
+          </Cylinder>
+          
+          {/* Coronation Text */}
+          <Text
+            position={[0, 2.5, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            {foundationData.coronation.emperor} Crowned
+          </Text>
+          
+          {/* Celebration Particles */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2
+            const radius = 1.5 + Math.sin(Date.now() * 0.003 + i) * 0.3
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.002 + i)) * 0.5
+            
+            return (
+              <Sphere key={i} args={[0.03]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#FFD700" 
+                  emissive="#FFD700"
+                  emissiveIntensity={0.8}
+                />
+              </Sphere>
+            )
+          })}
+        </group>
+      )}
+      
+      {/* Fort Construction Phase */}
+      {phase === 'fort' && (
+        <group>
+          {/* Fort Foundation */}
+          <Box args={[2 * fortProgress, 0.3, 2 * fortProgress]} position={[0, 0.15, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Box>
+          
+          {/* Fort Walls */}
+          {fortProgress > 0.3 && (
+            <Box args={[2, 1.5 * (fortProgress - 0.3) / 0.7, 0.2]} position={[0, 0.75 * (fortProgress - 0.3) / 0.7, 1]}>
+              <meshStandardMaterial color="#A0522D" />
+            </Box>
+          )}
+          
+          {/* Fort Towers */}
+          {fortProgress > 0.6 && (
+            <>
+              <Cylinder args={[0.2, 0.2, 1.5 * (fortProgress - 0.6) / 0.4]} position={[-0.8, 0.75 * (fortProgress - 0.6) / 0.4, 0.8]}>
+                <meshStandardMaterial color="#A0522D" />
+              </Cylinder>
+              <Cylinder args={[0.2, 0.2, 1.5 * (fortProgress - 0.6) / 0.4]} position={[0.8, 0.75 * (fortProgress - 0.6) / 0.4, 0.8]}>
+                <meshStandardMaterial color="#A0522D" />
+              </Cylinder>
+            </>
+          )}
+          
+          {/* Fort Text */}
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.2}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            {foundationData.fort.name}
+          </Text>
+        </group>
+      )}
+    </group>
+  )
+}
+
+// Coronation Ceremony for Akbar's Ascension
+const Coronation3D: FC<{ 
+  coronationData: any
+  isActive: boolean
+}> = ({ coronationData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'ceremony' | 'symbols' | 'completion'>('ceremony')
+  const [progress, setProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase transitions
+    const phase1Timer = setTimeout(() => setPhase('symbols'), 4000)
+    const phase2Timer = setTimeout(() => setPhase('completion'), 8000)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 0.008
+        if (newProgress >= 1) {
+          clearInterval(progressInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    return () => {
+      clearTimeout(phase1Timer)
+      clearTimeout(phase2Timer)
+      clearInterval(progressInterval)
+    }
+  }, [isActive])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Imperial Throne */}
+      <Box args={[1.2, 0.8, 0.6]} position={[0, 0.4, 0]}>
+        <meshStandardMaterial color="#8B4513" />
+      </Box>
+      
+      {/* Emperor Akbar */}
+      <Cylinder args={[0.12, 0.14, 0.5]} position={[0, 0.85, 0]}>
+        <meshStandardMaterial color="#10B981" />
+      </Cylinder>
+      <Sphere args={[0.14]} position={[0, 1.15, 0]}>
+        <meshStandardMaterial color="#D2B48C" />
+      </Sphere>
+      
+      {/* Imperial Crown */}
+      <Cylinder args={[0.18, 0.15, 0.1]} position={[0, 1.35, 0]}>
+        <meshStandardMaterial 
+          color="#FFD700" 
+          emissive="#FFD700" 
+          emissiveIntensity={0.4}
+        />
+      </Cylinder>
+      
+      {/* Coronation Symbols */}
+      {phase === 'symbols' && (
+        <group>
+          {/* Scepter */}
+          <Cylinder args={[0.02, 0.02, 0.8]} position={[0.4, 0.8, 0]} rotation={[0, 0, Math.PI/6]}>
+            <meshStandardMaterial color="#FFD700" />
+          </Cylinder>
+          
+          {/* Orb */}
+          <Sphere args={[0.08]} position={[0.6, 0.9, 0]}>
+            <meshStandardMaterial color="#FFD700" />
+          </Sphere>
+          
+          {/* Imperial Banner */}
+          <Plane args={[0.8, 0.6]} position={[-0.4, 1.2, 0]}>
+            <meshStandardMaterial color="#10B981" />
+          </Plane>
+        </group>
+      )}
+      
+      {/* Completion Effects */}
+      {phase === 'completion' && (
+        <group>
+          {/* Celebration Ring */}
+          {Array.from({ length: 12 }, (_, i) => {
+            const angle = (i / 12) * Math.PI * 2
+            const radius = 2 + Math.sin(Date.now() * 0.002 + i) * 0.2
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.3
+            
+            return (
+              <Sphere key={i} args={[0.04]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#FFD700" 
+                  emissive="#FFD700"
+                  emissiveIntensity={0.8}
+                />
+              </Sphere>
+            )
+          })}
+        </group>
+      )}
+      
+      {/* Emperor Name */}
+      <Text
+        position={[0, 2.8, 0]}
+        fontSize={0.3}
+        color="gold"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="black"
+      >
+        {coronationData.emperor}
+      </Text>
+      
+      {/* Phase Text */}
+      <Text
+        position={[0, -1.2, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="black"
+      >
+        {phase === 'ceremony' ? 'Imperial Coronation' : 
+         phase === 'symbols' ? 'Symbols of Power' : 'Empire Established'}
+      </Text>
+    </group>
+  )
+}
+
+// Conquest Celebration for Gujarat
+const Conquest3D: FC<{ 
+  conquestData: any
+  isActive: boolean
+}> = ({ conquestData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'celebration' | 'trade'>('celebration')
+  const [progress, setProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase transition
+    const phaseTimer = setTimeout(() => setPhase('trade'), conquestData.celebration.duration)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 0.01
+        if (newProgress >= 1) {
+          clearInterval(progressInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    return () => {
+      clearTimeout(phaseTimer)
+      clearInterval(progressInterval)
+    }
+  }, [isActive, conquestData])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Victory Banner */}
+      <Cylinder args={[0.05, 0.05, 1.5]} position={[0, 0.75, 0]}>
+        <meshStandardMaterial color="#8B4513" />
+      </Cylinder>
+      <Plane args={[1.2, 0.8]} position={[0.6, 1.2, 0]}>
+        <meshStandardMaterial color="#10B981" />
+      </Plane>
+      
+      {/* Victory Text */}
+      <Text
+        position={[0, 2.8, 0]}
+        fontSize={0.25}
+        color="gold"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="black"
+      >
+        GUJARAT CONQUERED
+      </Text>
+      
+      {/* Celebration Phase */}
+      {phase === 'celebration' && (
+        <group>
+          {/* Victory Soldiers */}
+          {Array.from({ length: 6 }, (_, i) => {
+            const angle = (i / 6) * Math.PI * 2
+            const radius = 1.5
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <group key={i} position={[x, 0, z]}>
+                <Cylinder args={[0.06, 0.08, 0.3]} position={[0, 0.15, 0]}>
+                  <meshStandardMaterial color="#10B981" />
+                </Cylinder>
+                <Sphere args={[0.07]} position={[0, 0.35, 0]}>
+                  <meshStandardMaterial color="#D2B48C" />
+                </Sphere>
+              </group>
+            )
+          })}
+          
+          {/* Celebration Particles */}
+          {Array.from({ length: 10 }, (_, i) => {
+            const angle = (i / 10) * Math.PI * 2
+            const radius = 2 + Math.sin(Date.now() * 0.002 + i) * 0.3
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.4
+            
+            return (
+              <Sphere key={i} args={[0.03]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#FFD700" 
+                  emissive="#FFD700"
+                  emissiveIntensity={0.7}
+                />
+              </Sphere>
+            )
+          })}
+        </group>
+      )}
+      
+      {/* Trade Route Phase */}
+      {phase === 'trade' && (
+        <group>
+          {/* Trade Route Line */}
+          <Cylinder args={[0.02, 0.02, 2]} position={[0, 0.1, -1]} rotation={[Math.PI/2, 0, 0]}>
+            <meshStandardMaterial color="#FFD700" />
+          </Cylinder>
+          
+          {/* Port Development */}
+          <group position={[0, 0, -2]}>
+            <Box args={[0.8, 0.4, 0.6]} position={[0, 0.2, 0]}>
+              <meshStandardMaterial color="#8B4513" />
+            </Box>
+            <Cylinder args={[0.1, 0.1, 0.8]} position={[0, 0.6, 0]}>
+              <meshStandardMaterial color="#A0522D" />
+            </Cylinder>
+            <Text
+              position={[0, 2.2, 0]}
+              fontSize={0.15}
+              color="white"
+              anchorX="center"
+              anchorY="middle"
+              outlineWidth={0.01}
+              outlineColor="black"
+            >
+              {conquestData.tradeRoute.port.name}
+            </Text>
+          </group>
+          
+          {/* Trade Ships */}
+          {Array.from({ length: 3 }, (_, i) => {
+            const shipProgress = Math.min(1, progress * 3 - i * 0.3)
+            const x = shipProgress * 2 - 1
+            const z = -1 + shipProgress * 0.5
+            
+            return (
+              <group key={i} position={[x, 0.1, z]}>
+                <Box args={[0.3, 0.15, 0.1]} position={[0, 0.075, 0]}>
+                  <meshStandardMaterial color="#8B4513" />
+                </Box>
+                <Cylinder args={[0.02, 0.02, 0.4]} position={[0, 0.3, 0]}>
+                  <meshStandardMaterial color="#8B4513" />
+                </Cylinder>
+              </group>
+            )
+          })}
+        </group>
+      )}
+    </group>
+  )
+}
+
+// Religious Ceremony for Din-i Ilahi
+const Religious3D: FC<{ 
+  religiousData: any
+  isActive: boolean
+}> = ({ religiousData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'proclamation' | 'symbols' | 'unity'>('proclamation')
+  const [progress, setProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase transitions
+    const phase1Timer = setTimeout(() => setPhase('symbols'), 4000)
+    const phase2Timer = setTimeout(() => setPhase('unity'), 8000)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 0.008
+        if (newProgress >= 1) {
+          clearInterval(progressInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    return () => {
+      clearTimeout(phase1Timer)
+      clearTimeout(phase2Timer)
+      clearInterval(progressInterval)
+    }
+  }, [isActive])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Palace Base */}
+      <Box args={[2, 0.5, 2]} position={[0, 0.25, 0]}>
+        <meshStandardMaterial color="#8B4513" />
+      </Box>
+      
+      {/* Palace Structure */}
+      <Box args={[1.5, 1.2, 1.5]} position={[0, 1.1, 0]}>
+        <meshStandardMaterial color="#A0522D" />
+      </Box>
+      
+      {/* Palace Dome */}
+      <Cylinder args={[0.8, 0.8, 0.4]} position={[0, 2.2, 0]}>
+        <meshStandardMaterial color="#FFD700" />
+      </Cylinder>
+      
+      {/* Divine Light */}
+      {phase === 'proclamation' && (
+        <group>
+          <Cylinder args={[0.1, 0.3, 2]} position={[0, 3.5, 0]}>
+            <meshStandardMaterial 
+              color="#FFFF00" 
+              emissive="#FFFF00" 
+              emissiveIntensity={0.8}
+              transparent
+              opacity={0.7}
+            />
+          </Cylinder>
+          
+          <Text
+            position={[0, 5.5, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            DIN-I ILAHI
+          </Text>
+        </group>
+      )}
+      
+      {/* Spiritual Symbols */}
+      {phase === 'symbols' && (
+        <group>
+          {/* Unity Symbols */}
+          {Array.from({ length: 6 }, (_, i) => {
+            const angle = (i / 6) * Math.PI * 2
+            const radius = 1.8
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <group key={i} position={[x, 1.5, z]}>
+                <Cylinder args={[0.05, 0.05, 0.8]} position={[0, 0.4, 0]}>
+                  <meshStandardMaterial color="#FFD700" />
+                </Cylinder>
+                <Sphere args={[0.08]} position={[0, 0.9, 0]}>
+                  <meshStandardMaterial 
+                    color={i % 2 === 0 ? "#FF0000" : "#00FF00"} 
+                    emissive={i % 2 === 0 ? "#FF0000" : "#00FF00"}
+                    emissiveIntensity={0.5}
+                  />
+                </Sphere>
+              </group>
+            )
+          })}
+          
+          <Text
+            position={[0, 4, 0]}
+            fontSize={0.2}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            Religious Unity
+          </Text>
+        </group>
+      )}
+      
+      {/* Unity Banner */}
+      {phase === 'unity' && (
+        <group>
+          <Plane args={[2, 1]} position={[0, 2.5, 0]}>
+            <meshStandardMaterial color="#800080" />
+          </Plane>
+          
+          <Text
+            position={[0, 2.5, 0]}
+            fontSize={0.15}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.01}
+            outlineColor="black"
+          >
+            Unity of Faiths
+          </Text>
+          
+          {/* Unity Particles */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2
+            const radius = 2.5 + Math.sin(Date.now() * 0.002 + i) * 0.2
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.3
+            
+            return (
+              <Sphere key={i} args={[0.03]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#800080" 
+                  emissive="#800080"
+                  emissiveIntensity={0.6}
+                />
+              </Sphere>
+            )
+          })}
+        </group>
+      )}
+      
+      {/* Palace Name */}
+      <Text
+        position={[0, -1.5, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="black"
+      >
+        {religiousData.monument.name}
+      </Text>
+    </group>
+  )
+}
+
+// Diplomatic Meeting for East India Company
+const Diplomatic3D: FC<{ 
+  diplomaticData: any
+  isActive: boolean
+}> = ({ diplomaticData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'meeting' | 'trade' | 'agreement'>('meeting')
+  const [progress, setProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase transitions
+    const phase1Timer = setTimeout(() => setPhase('trade'), 4000)
+    const phase2Timer = setTimeout(() => setPhase('agreement'), 8000)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 0.008
+        if (newProgress >= 1) {
+          clearInterval(progressInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    return () => {
+      clearTimeout(phase1Timer)
+      clearTimeout(phase2Timer)
+      clearInterval(progressInterval)
+    }
+  }, [isActive])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Mughal Court */}
+      <Box args={[2.5, 0.5, 2.5]} position={[0, 0.25, 0]}>
+        <meshStandardMaterial color="#8B4513" />
+      </Box>
+      
+      {/* Court Structure */}
+      <Box args={[2, 1.5, 2]} position={[0, 1.25, 0]}>
+        <meshStandardMaterial color="#A0522D" />
+      </Box>
+      
+      {/* Mughal Emperor */}
+      <group position={[-0.5, 0.8, 0]}>
+        <Cylinder args={[0.1, 0.12, 0.4]} position={[0, 0.2, 0]}>
+          <meshStandardMaterial color="#10B981" />
+        </Cylinder>
+        <Sphere args={[0.12]} position={[0, 0.45, 0]}>
+          <meshStandardMaterial color="#D2B48C" />
+        </Sphere>
+        <Cylinder args={[0.15, 0.12, 0.08]} position={[0, 0.6, 0]}>
+          <meshStandardMaterial color="#FFD700" />
+        </Cylinder>
+      </group>
+      
+      {/* British Ambassador */}
+      <group position={[0.5, 0.8, 0]}>
+        <Cylinder args={[0.1, 0.12, 0.4]} position={[0, 0.2, 0]}>
+          <meshStandardMaterial color="#1E40AF" />
+        </Cylinder>
+        <Sphere args={[0.12]} position={[0, 0.45, 0]}>
+          <meshStandardMaterial color="#D2B48C" />
+        </Sphere>
+        <Box args={[0.2, 0.1, 0.1]} position={[0, 0.6, 0]}>
+          <meshStandardMaterial color="#1E40AF" />
+        </Box>
+      </group>
+      
+      {/* Meeting Phase */}
+      {phase === 'meeting' && (
+        <group>
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            DIPLOMATIC MEETING
+          </Text>
+          
+          {/* Meeting Table */}
+          <Box args={[1.5, 0.1, 0.8]} position={[0, 0.6, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Box>
+        </group>
+      )}
+      
+      {/* Trade Route Phase */}
+      {phase === 'trade' && (
+        <group>
+          {/* Trade Route Visualization */}
+          <Cylinder args={[0.02, 0.02, 3]} position={[0, 0.1, -1.5]} rotation={[Math.PI/2, 0, 0]}>
+            <meshStandardMaterial color="#FFD700" />
+          </Cylinder>
+          
+          {/* Ships along route */}
+          {Array.from({ length: 4 }, (_, i) => {
+            const shipProgress = Math.min(1, progress * 4 - i * 0.2)
+            const x = shipProgress * 3 - 1.5
+            const z = -1.5 + shipProgress * 0.3
+            
+            return (
+              <group key={i} position={[x, 0.1, z]}>
+                <Box args={[0.4, 0.2, 0.15]} position={[0, 0.1, 0]}>
+                  <meshStandardMaterial color="#1E40AF" />
+                </Box>
+                <Cylinder args={[0.02, 0.02, 0.5]} position={[0, 0.4, 0]}>
+                  <meshStandardMaterial color="#1E40AF" />
+                </Cylinder>
+              </group>
+            )
+          })}
+          
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.2}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            Trade Route Established
+          </Text>
+        </group>
+      )}
+      
+      {/* Agreement Phase */}
+      {phase === 'agreement' && (
+        <group>
+          {/* Agreement Document */}
+          <Plane args={[1, 0.8]} position={[0, 1.5, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Plane>
+          
+          <Text
+            position={[0, 1.5, 0]}
+            fontSize={0.1}
+            color="black"
+            anchorX="center"
+            anchorY="middle"
+          >
+            TRADE AGREEMENT
+          </Text>
+          
+          {/* Agreement Particles */}
+          {Array.from({ length: 6 }, (_, i) => {
+            const angle = (i / 6) * Math.PI * 2
+            const radius = 2 + Math.sin(Date.now() * 0.002 + i) * 0.2
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.3
+            
+            return (
+              <Sphere key={i} args={[0.03]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#1E40AF" 
+                  emissive="#1E40AF"
+                  emissiveIntensity={0.6}
+                />
+              </Sphere>
+            )
+          })}
+          
+          <Text
+            position={[0, 3.7, 0]}
+            fontSize={0.2}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            Agreement Signed
+          </Text>
+        </group>
+      )}
+      
+      {/* Court Name */}
+      <Text
+        position={[0, -1.5, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="black"
+      >
+        {diplomaticData.monument.name}
+      </Text>
+    </group>
+  )
+}
+
+// Construction Sequence for Taj Mahal
+const Construction3D: FC<{ 
+  constructionData: any
+  isActive: boolean
+}> = ({ constructionData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [currentPhase, setCurrentPhase] = useState(0)
+  const [phaseProgress, setPhaseProgress] = useState(0)
+  const [workersVisible, setWorkersVisible] = useState(false)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase management
+    const phaseTimer = setInterval(() => {
+      setCurrentPhase(prev => {
+        if (prev < constructionData.phases.length - 1) {
+          setPhaseProgress(0)
+          return prev + 1
+        } else {
+          clearInterval(phaseTimer)
+          return prev
+        }
+      })
+    }, constructionData.phases[0].duration)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setPhaseProgress(prev => {
+        const newProgress = prev + 0.02
+        if (newProgress >= 1) {
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    // Show workers after first phase
+    const workersTimer = setTimeout(() => {
+      setWorkersVisible(true)
+    }, constructionData.phases[0].duration)
+    
+    return () => {
+      clearInterval(phaseTimer)
+      clearInterval(progressInterval)
+      clearTimeout(workersTimer)
+    }
+  }, [isActive, constructionData])
+  
+  if (!isActive) return null
+  
+  const currentPhaseData = constructionData.phases[currentPhase]
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Foundation Phase */}
+      {currentPhase === 0 && (
+        <group>
+          <Box args={[2 * phaseProgress, 0.3, 2 * phaseProgress]} position={[0, 0.15, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Box>
+          <Text
+            position={[0, 2.2, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            {currentPhaseData.name}
+          </Text>
+        </group>
+      )}
+      
+      {/* Walls Phase */}
+      {currentPhase === 1 && (
+        <group>
+          <Box args={[2, 0.3, 2]} position={[0, 0.15, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Box>
+          <Box args={[2, 1.5 * phaseProgress, 0.2]} position={[0, 0.75 * phaseProgress, 1]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[2, 1.5 * phaseProgress, 0.2]} position={[0, 0.75 * phaseProgress, -1]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[0.2, 1.5 * phaseProgress, 2]} position={[1, 0.75 * phaseProgress, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[0.2, 1.5 * phaseProgress, 2]} position={[-1, 0.75 * phaseProgress, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            {currentPhaseData.name}
+          </Text>
+        </group>
+      )}
+      
+      {/* Dome Phase */}
+      {currentPhase === 2 && (
+        <group>
+          <Box args={[2, 0.3, 2]} position={[0, 0.15, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Box>
+          <Box args={[2, 1.5, 0.2]} position={[0, 0.75, 1]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[2, 1.5, 0.2]} position={[0, 0.75, -1]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[0.2, 1.5, 2]} position={[1, 0.75, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[0.2, 1.5, 2]} position={[-1, 0.75, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Cylinder args={[1.2 * phaseProgress, 1.2 * phaseProgress, 0.8 * phaseProgress]} position={[0, 1.5 + 0.4 * phaseProgress, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Cylinder>
+          <Text
+            position={[0, 3.7, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            {currentPhaseData.name}
+          </Text>
+        </group>
+      )}
+      
+      {/* Completion Phase */}
+      {currentPhase === 3 && (
+        <group>
+          <Box args={[2, 0.3, 2]} position={[0, 0.15, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Box>
+          <Box args={[2, 1.5, 0.2]} position={[0, 0.75, 1]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[2, 1.5, 0.2]} position={[0, 0.75, -1]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[0.2, 1.5, 2]} position={[1, 0.75, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Box args={[0.2, 1.5, 2]} position={[-1, 0.75, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Box>
+          <Cylinder args={[1.2, 1.2, 0.8]} position={[0, 1.9, 0]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Cylinder>
+          
+          {/* Minarets */}
+          <Cylinder args={[0.1, 0.1, 2]} position={[1.5, 1, 1.5]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Cylinder>
+          <Cylinder args={[0.1, 0.1, 2]} position={[-1.5, 1, 1.5]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Cylinder>
+          <Cylinder args={[0.1, 0.1, 2]} position={[1.5, 1, -1.5]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Cylinder>
+          <Cylinder args={[0.1, 0.1, 2]} position={[-1.5, 1, -1.5]}>
+            <meshStandardMaterial color="#FFFFFF" />
+          </Cylinder>
+          
+          {/* Completion Celebration */}
+          {Array.from({ length: 12 }, (_, i) => {
+            const angle = (i / 12) * Math.PI * 2
+            const radius = 3 + Math.sin(Date.now() * 0.002 + i) * 0.3
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.5
+            
+            return (
+              <Sphere key={i} args={[0.04]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#FFD700" 
+                  emissive="#FFD700"
+                  emissiveIntensity={0.8}
+                />
+              </Sphere>
+            )
+          })}
+          
+          <Text
+            position={[0, 4.2, 0]}
+            fontSize={0.3}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            TAJ MAHAL COMPLETED
+          </Text>
+        </group>
+      )}
+      
+      {/* Workers */}
+      {workersVisible && (
+        <group>
+          {Array.from({ length: constructionData.workers.count }, (_, i) => {
+            const angle = (i / constructionData.workers.count) * Math.PI * 2
+            const radius = 2.5
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <group key={i} position={[x, 0, z]}>
+                <Cylinder args={[0.05, 0.07, 0.25]} position={[0, 0.125, 0]}>
+                  <meshStandardMaterial color="#8B4513" />
+                </Cylinder>
+                <Sphere args={[0.06]} position={[0, 0.31, 0]}>
+                  <meshStandardMaterial color="#D2B48C" />
+                </Sphere>
+              </group>
+            )
+          })}
+        </group>
+      )}
+      
+      {/* Materials Transport */}
+      {currentPhase < 3 && (
+        <group>
+          {Array.from({ length: 3 }, (_, i) => {
+            const materialProgress = Math.min(1, phaseProgress * 3 - i * 0.3)
+            const x = materialProgress * 2 - 1
+            const z = -2 + materialProgress * 0.5
+            
+            return (
+              <group key={i} position={[x, 0.1, z]}>
+                <Box args={[0.2, 0.15, 0.1]} position={[0, 0.075, 0]}>
+                  <meshStandardMaterial color="#FFD700" />
+                </Box>
+              </group>
+            )
+          })}
+        </group>
+      )}
+    </group>
+  )
+}
+
+// Independence Declaration for Maratha Empire
+const Independence3D: FC<{ 
+  independenceData: any
+  isActive: boolean
+}> = ({ independenceData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'flag' | 'coronation' | 'celebration'>('flag')
+  const [progress, setProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase transitions
+    const phase1Timer = setTimeout(() => setPhase('coronation'), 5000)
+    const phase2Timer = setTimeout(() => setPhase('celebration'), 10000)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 0.006
+        if (newProgress >= 1) {
+          clearInterval(progressInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    return () => {
+      clearTimeout(phase1Timer)
+      clearTimeout(phase2Timer)
+      clearInterval(progressInterval)
+    }
+  }, [isActive])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Fort Base */}
+      <Box args={[2.5, 0.5, 2.5]} position={[0, 0.25, 0]}>
+        <meshStandardMaterial color="#8B4513" />
+      </Box>
+      
+      {/* Fort Structure */}
+      <Box args={[2, 1.5, 2]} position={[0, 1.25, 0]}>
+        <meshStandardMaterial color="#A0522D" />
+      </Box>
+      
+      {/* Flag Raising Phase */}
+      {phase === 'flag' && (
+        <group>
+          {/* Flag Pole */}
+          <Cylinder args={[0.05, 0.05, 2]} position={[0, 1.5, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Cylinder>
+          
+          {/* Maratha Flag */}
+          <Plane args={[0.8, 0.6]} position={[0.4, 1.5 + progress * 1, 0]}>
+            <meshStandardMaterial color="#FF6B35" />
+          </Plane>
+          
+          <Text
+            position={[0, 4.2, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            MARATHA FLAG RAISED
+          </Text>
+        </group>
+      )}
+      
+      {/* Coronation Phase */}
+      {phase === 'coronation' && (
+        <group>
+          {/* Flag Pole */}
+          <Cylinder args={[0.05, 0.05, 2]} position={[0, 1.5, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Cylinder>
+          
+          {/* Maratha Flag */}
+          <Plane args={[0.8, 0.6]} position={[0.4, 2.5, 0]}>
+            <meshStandardMaterial color="#FF6B35" />
+          </Plane>
+          
+          {/* Shivaji Maharaj */}
+          <group position={[0, 0.8, 0]}>
+            <Cylinder args={[0.1, 0.12, 0.4]} position={[0, 0.2, 0]}>
+              <meshStandardMaterial color="#FF6B35" />
+            </Cylinder>
+            <Sphere args={[0.12]} position={[0, 0.45, 0]}>
+              <meshStandardMaterial color="#D2B48C" />
+            </Sphere>
+            <Cylinder args={[0.15, 0.12, 0.08]} position={[0, 0.6, 0]}>
+              <meshStandardMaterial color="#FFD700" />
+            </Cylinder>
+          </group>
+          
+          <Text
+            position={[0, 4.2, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            {independenceData.ceremony.leader} CROWNED
+          </Text>
+        </group>
+      )}
+      
+      {/* Celebration Phase */}
+      {phase === 'celebration' && (
+        <group>
+          {/* Flag Pole */}
+          <Cylinder args={[0.05, 0.05, 2]} position={[0, 1.5, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Cylinder>
+          
+          {/* Maratha Flag */}
+          <Plane args={[0.8, 0.6]} position={[0.4, 2.5, 0]}>
+            <meshStandardMaterial color="#FF6B35" />
+          </Plane>
+          
+          {/* Shivaji Maharaj */}
+          <group position={[0, 0.8, 0]}>
+            <Cylinder args={[0.1, 0.12, 0.4]} position={[0, 0.2, 0]}>
+              <meshStandardMaterial color="#FF6B35" />
+            </Cylinder>
+            <Sphere args={[0.12]} position={[0, 0.45, 0]}>
+              <meshStandardMaterial color="#D2B48C" />
+            </Sphere>
+            <Cylinder args={[0.15, 0.12, 0.08]} position={[0, 0.6, 0]}>
+              <meshStandardMaterial color="#FFD700" />
+            </Cylinder>
+          </group>
+          
+          {/* Celebration Ring */}
+          {Array.from({ length: 15 }, (_, i) => {
+            const angle = (i / 15) * Math.PI * 2
+            const radius = 3 + Math.sin(Date.now() * 0.002 + i) * 0.3
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.4
+            
+            return (
+              <Sphere key={i} args={[0.04]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#FF6B35" 
+                  emissive="#FF6B35"
+                  emissiveIntensity={0.8}
+                />
+              </Sphere>
+            )
+          })}
+          
+          <Text
+            position={[0, 4.7, 0]}
+            fontSize={0.3}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            MARATHA EMPIRE ESTABLISHED
+          </Text>
+        </group>
+      )}
+      
+      {/* Fort Name */}
+      <Text
+        position={[0, -1.5, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="black"
+      >
+        {independenceData.monument.name}
+      </Text>
+    </group>
+  )
+}
+
+// Imperial Expansion for Aurangzeb's Conquest
+const Expansion3D: FC<{ 
+  expansionData: any
+  isActive: boolean
+}> = ({ expansionData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'territory' | 'victory'>('territory')
+  const [progress, setProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase transition
+    const phaseTimer = setTimeout(() => setPhase('victory'), expansionData.territory.duration)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 0.01
+        if (newProgress >= 1) {
+          clearInterval(progressInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    return () => {
+      clearTimeout(phaseTimer)
+      clearInterval(progressInterval)
+    }
+  }, [isActive, expansionData])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Territory Marking Phase */}
+      {phase === 'territory' && (
+        <group>
+          {/* Territory Border */}
+          <Box args={[4 * progress, 0.1, 4 * progress]} position={[0, 0.05, 0]}>
+            <meshStandardMaterial color="#FFD700" />
+          </Box>
+          
+          {/* Territory Markers */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2
+            const radius = 2 * progress
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <Cylinder key={i} args={[0.1, 0.1, 0.8]} position={[x, 0.5, z]}>
+                <meshStandardMaterial color="#10B981" />
+              </Cylinder>
+            )
+          })}
+          
+          {/* Imperial Banner */}
+          <Cylinder args={[0.05, 0.05, 1.5]} position={[0, 0.75, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Cylinder>
+          <Plane args={[1, 0.7]} position={[0.5, 1.2, 0]}>
+            <meshStandardMaterial color="#10B981" />
+          </Plane>
+          
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            TERRITORY MARKED
+          </Text>
+        </group>
+      )}
+      
+      {/* Victory Celebration Phase */}
+      {phase === 'victory' && (
+        <group>
+          {/* Territory Border */}
+          <Box args={[4, 0.1, 4]} position={[0, 0.05, 0]}>
+            <meshStandardMaterial color="#FFD700" />
+          </Box>
+          
+          {/* Territory Markers */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2
+            const radius = 2
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <Cylinder key={i} args={[0.1, 0.1, 0.8]} position={[x, 0.5, z]}>
+                <meshStandardMaterial color="#10B981" />
+              </Cylinder>
+            )
+          })}
+          
+          {/* Imperial Banner */}
+          <Cylinder args={[0.05, 0.05, 1.5]} position={[0, 0.75, 0]}>
+            <meshStandardMaterial color="#8B4513" />
+          </Cylinder>
+          <Plane args={[1, 0.7]} position={[0.5, 1.2, 0]}>
+            <meshStandardMaterial color="#10B981" />
+          </Plane>
+          
+          {/* Victory Soldiers */}
+          {Array.from({ length: 10 }, (_, i) => {
+            const angle = (i / 10) * Math.PI * 2
+            const radius = 2.5
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <group key={i} position={[x, 0, z]}>
+                <Cylinder args={[0.06, 0.08, 0.3]} position={[0, 0.15, 0]}>
+                  <meshStandardMaterial color="#10B981" />
+                </Cylinder>
+                <Sphere args={[0.07]} position={[0, 0.35, 0]}>
+                  <meshStandardMaterial color="#D2B48C" />
+                </Sphere>
+              </group>
+            )
+          })}
+          
+          {/* Victory Particles */}
+          {Array.from({ length: 12 }, (_, i) => {
+            const angle = (i / 12) * Math.PI * 2
+            const radius = 3 + Math.sin(Date.now() * 0.002 + i) * 0.3
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.4
+            
+            return (
+              <Sphere key={i} args={[0.04]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#FFD700" 
+                  emissive="#FFD700"
+                  emissiveIntensity={0.8}
+                />
+              </Sphere>
+            )
+          })}
+          
+          <Text
+            position={[0, 3.7, 0]}
+            fontSize={0.3}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            DECCAN CONQUERED
+          </Text>
+        </group>
+      )}
+    </group>
+  )
+}
+
+// Invasion Sequence for Nader Shah
+const Invasion3D: FC<{ 
+  invasionData: any
+  isActive: boolean
+}> = ({ invasionData, isActive }) => {
+  const groupRef = useRef<any>(null)
+  const [phase, setPhase] = useState<'invasion' | 'looting' | 'devastation'>('invasion')
+  const [progress, setProgress] = useState(0)
+  const [lootProgress, setLootProgress] = useState(0)
+  
+  useEffect(() => {
+    if (!isActive) return
+    
+    // Phase transitions
+    const phase1Timer = setTimeout(() => setPhase('looting'), 4000)
+    const phase2Timer = setTimeout(() => setPhase('devastation'), 10000)
+    
+    // Progress animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 0.01
+        if (newProgress >= 1) {
+          clearInterval(progressInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    // Loot transport animation
+    const lootInterval = setInterval(() => {
+      setLootProgress(prev => {
+        const newProgress = prev + 0.005
+        if (newProgress >= 1) {
+          clearInterval(lootInterval)
+          return 1
+        }
+        return newProgress
+      })
+    }, 100)
+    
+    return () => {
+      clearTimeout(phase1Timer)
+      clearTimeout(phase2Timer)
+      clearInterval(progressInterval)
+      clearInterval(lootInterval)
+    }
+  }, [isActive])
+  
+  if (!isActive) return null
+  
+  return (
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Invasion Phase */}
+      {phase === 'invasion' && (
+        <group>
+          {/* Invasion Forces */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2
+            const radius = 2 + progress * 0.5
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <group key={i} position={[x, 0, z]}>
+                <Cylinder args={[0.06, 0.08, 0.3]} position={[0, 0.15, 0]}>
+                  <meshStandardMaterial color="#DC2626" />
+                </Cylinder>
+                <Sphere args={[0.07]} position={[0, 0.35, 0]}>
+                  <meshStandardMaterial color="#D2B48C" />
+                </Sphere>
+              </group>
+            )
+          })}
+          
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.25}
+            color="red"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            NADER SHAH INVADES
+          </Text>
+        </group>
+      )}
+      
+      {/* Looting Phase */}
+      {phase === 'looting' && (
+        <group>
+          {/* Treasure Pile */}
+          <Box args={[1, 0.5, 1]} position={[0, 0.25, 0]}>
+            <meshStandardMaterial color="#FFD700" />
+          </Box>
+          
+          {/* Loot Items */}
+          {Array.from({ length: 6 }, (_, i) => {
+            const angle = (i / 6) * Math.PI * 2
+            const radius = 0.8
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            
+            return (
+              <Sphere key={i} args={[0.1]} position={[x, 0.6, z]}>
+                <meshStandardMaterial 
+                  color="#FFD700" 
+                  emissive="#FFD700"
+                  emissiveIntensity={0.5}
+                />
+              </Sphere>
+            )
+          })}
+          
+          {/* Loot Transport */}
+          {Array.from({ length: 4 }, (_, i) => {
+            const transportProgress = Math.min(1, lootProgress * 4 - i * 0.2)
+            const x = transportProgress * 3 - 1.5
+            const z = transportProgress * 2 - 1
+            
+            return (
+              <group key={i} position={[x, 0.1, z]}>
+                <Box args={[0.3, 0.2, 0.15]} position={[0, 0.1, 0]}>
+                  <meshStandardMaterial color="#FFD700" />
+                </Box>
+                <Cylinder args={[0.02, 0.02, 0.5]} position={[0, 0.4, 0]}>
+                  <meshStandardMaterial color="#8B4513" />
+                </Cylinder>
+              </group>
+            )
+          })}
+          
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.25}
+            color="gold"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            TREASURE LOOTED
+          </Text>
+        </group>
+      )}
+      
+      {/* Devastation Phase */}
+      {phase === 'devastation' && (
+        <group>
+          {/* Ruins */}
+          <Box args={[2, 0.3, 2]} position={[0, 0.15, 0]}>
+            <meshStandardMaterial color="#696969" />
+          </Box>
+          
+          {/* Smoke Effects */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2
+            const radius = 1.5 + Math.sin(Date.now() * 0.002 + i) * 0.3
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.003 + i)) * 0.8
+            
+            return (
+              <Sphere key={i} args={[0.08]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#808080" 
+                  transparent
+                  opacity={0.6}
+                />
+              </Sphere>
+            )
+          })}
+          
+          {/* Devastation Particles */}
+          {Array.from({ length: 10 }, (_, i) => {
+            const angle = (i / 10) * Math.PI * 2
+            const radius = 2.5 + Math.sin(Date.now() * 0.001 + i) * 0.2
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const y = Math.abs(Math.sin(Date.now() * 0.002 + i)) * 0.3
+            
+            return (
+              <Sphere key={i} args={[0.03]} position={[x, y, z]}>
+                <meshStandardMaterial 
+                  color="#8B0000" 
+                  emissive="#8B0000"
+                  emissiveIntensity={0.6}
+                />
+              </Sphere>
+            )
+          })}
+          
+          <Text
+            position={[0, 3.2, 0]}
+            fontSize={0.3}
+            color="red"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="black"
+          >
+            DELHI DEVASTATED
+          </Text>
+        </group>
+      )}
+    </group>
+  )
+}
+
 // Monument construction component
 const Monument3D: FC<{ 
   position: [number, number, number]
@@ -697,7 +2449,7 @@ const Monument3D: FC<{
   if (!isActive) return null
   
   const getMonument = () => {
-    switch (type) {
+  switch (type) {
       case 'taj':
         return (
           <group ref={monumentRef} position={position}>
@@ -842,7 +2594,7 @@ const Monument3D: FC<{
           </group>
         )
       
-      default:
+    default:
         return (
           <Box args={[1.0, 1.0 * buildProgress, 1.0]} position={position}>
             <meshStandardMaterial color="#8B4513" />
@@ -1356,7 +3108,7 @@ const EmpireEnd3D: FC<{
       {/* Phase-specific text and effects */}
       {phase === 'court' && (
         <Text
-          position={[0, 1.8, 0]}
+          position={[0, 2.8, 0]}
           fontSize={0.25}
           color="#FFD700"
           anchorX="center"
@@ -1370,7 +3122,7 @@ const EmpireEnd3D: FC<{
       
       {phase === 'trial' && (
         <Text
-          position={[0, 1.8, 0]}
+          position={[0, 2.8, 0]}
           fontSize={0.25}
           color="#FF0000"
           anchorX="center"
@@ -1384,7 +3136,7 @@ const EmpireEnd3D: FC<{
       
       {phase === 'exile' && (
         <Text
-          position={[0, 1.8, 0]}
+          position={[0, 2.8, 0]}
           fontSize={0.25}
           color="#8A2BE2"
           anchorX="center"
@@ -1398,7 +3150,7 @@ const EmpireEnd3D: FC<{
       
       {phase === 'end' && (
         <Text
-          position={[0, 1.8, 0]}
+          position={[0, 2.8, 0]}
           fontSize={0.25}
           color="#2F2F2F"
           anchorX="center"
@@ -1512,6 +3264,78 @@ const ThreeJSOverlay: FC<{
                     isActive={element.data.isActive}
                   />
                 )
+              case 'foundation':
+                return (
+                  <Foundation3D
+                    key={`foundation-${i}`}
+                    foundationData={element.data.foundationData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'coronation':
+                return (
+                  <Coronation3D
+                    key={`coronation-${i}`}
+                    coronationData={element.data.coronationData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'conquest':
+                return (
+                  <Conquest3D
+                    key={`conquest-${i}`}
+                    conquestData={element.data.conquestData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'religious':
+                return (
+                  <Religious3D
+                    key={`religious-${i}`}
+                    religiousData={element.data.religiousData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'diplomatic':
+                return (
+                  <Diplomatic3D
+                    key={`diplomatic-${i}`}
+                    diplomaticData={element.data.diplomaticData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'construction':
+                return (
+                  <Construction3D
+                    key={`construction-${i}`}
+                    constructionData={element.data.constructionData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'independence':
+                return (
+                  <Independence3D
+                    key={`independence-${i}`}
+                    independenceData={element.data.independenceData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'expansion':
+                return (
+                  <Expansion3D
+                    key={`expansion-${i}`}
+                    expansionData={element.data.expansionData}
+                    isActive={element.data.isActive}
+                  />
+                )
+              case 'invasion':
+                return (
+                  <Invasion3D
+                    key={`invasion-${i}`}
+                    invasionData={element.data.invasionData}
+                    isActive={element.data.isActive}
+                  />
+                )
               case 'monument':
                 return (
                   <Monument3D
@@ -1565,8 +3389,8 @@ const ThreeJSOverlay: FC<{
                   />
                 )
               default:
-                return null
-            }
+  return null
+}
           })}
           
           <OrbitControls enablePan={false} enableZoom={false} enableRotate={false} />
@@ -1750,22 +3574,130 @@ const BattleSequence: FC<{ event: any; isActive: boolean }> = ({ event, isActive
   const get3DElements = () => {
     const elements: any[] = []
     
-    // Handle monument construction events
-    if (battleData.monument) {
+    // Handle foundation events (1526 - Babur's coronation)
+    if (battleData.foundation && phase === 'battle') {
+      elements.push({
+        type: 'foundation',
+        position: battleData.foundation.coronation.position,
+        data: {
+          foundationData: battleData.foundation,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle coronation events (1556 - Akbar's coronation)
+    if (battleData.coronation && phase === 'battle') {
+      elements.push({
+        type: 'coronation',
+        position: battleData.coronation.position,
+        data: {
+          coronationData: battleData.coronation,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle conquest events (1572 - Gujarat conquest)
+    if (battleData.conquest && phase === 'battle') {
+      elements.push({
+        type: 'conquest',
+        position: battleData.conquest.celebration.position,
+        data: {
+          conquestData: battleData.conquest,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle religious events (1582 - Din-i Ilahi)
+    if (battleData.religious && phase === 'battle') {
+      elements.push({
+        type: 'religious',
+        position: battleData.religious.ceremony.position,
+        data: {
+          religiousData: battleData.religious,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle diplomatic events (1615 - East India Company)
+    if (battleData.diplomatic && phase === 'battle') {
+      elements.push({
+        type: 'diplomatic',
+        position: battleData.diplomatic.ceremony.position,
+        data: {
+          diplomaticData: battleData.diplomatic,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle construction events (1632 - Taj Mahal)
+    if (battleData.construction && phase === 'battle') {
+      elements.push({
+        type: 'construction',
+        position: battleData.monument.position,
+        data: {
+          constructionData: battleData.construction,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle independence events (1674 - Maratha coronation)
+    if (battleData.independence && phase === 'battle') {
+      elements.push({
+        type: 'independence',
+        position: battleData.independence.ceremony.position,
+        data: {
+          independenceData: battleData.independence,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle expansion events (1686 - Deccan conquest)
+    if (battleData.expansion && phase === 'battle') {
+      elements.push({
+        type: 'expansion',
+        position: battleData.expansion.territory.position,
+        data: {
+          expansionData: battleData.expansion,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle invasion events (1739 - Nader Shah)
+    if (battleData.invasion && phase === 'battle') {
+      elements.push({
+        type: 'invasion',
+        position: battleData.invasion.loot.position,
+        data: {
+          invasionData: battleData.invasion,
+          isActive: true
+        }
+      })
+    }
+    
+    // Handle monument construction events (fallback)
+    if (battleData.monument && !battleData.construction && phase === 'battle') {
       elements.push({
         type: 'monument',
         position: battleData.monument.position,
         data: {
           type: battleData.monument.type,
           name: battleData.monument.name,
-          isActive: phase === 'battle'
+          isActive: true
         }
       })
     }
     
     // Handle trade routes with ships
-    if (battleData.tradeRoute && phase === 'battle') {
-      battleData.tradeRoute.forEach((routePoint: [number, number], i: number) => {
+    if (battleData.diplomatic?.tradeRoute && phase === 'battle') {
+      battleData.diplomatic.tradeRoute.route.forEach((routePoint: [number, number], i: number) => {
         if (i > 0) { // Skip first point, place ships along route
           elements.push({
             type: 'ship',
@@ -1776,36 +3708,15 @@ const BattleSequence: FC<{ event: any; isActive: boolean }> = ({ event, isActive
       })
     }
     
-    // Handle coronation ceremonies
-    if (battleData.ceremony) {
-      elements.push({
-        type: 'ceremony',
-        position: battleData.ceremony.position,
-        data: {
-          leader: battleData.ceremony.leader,
-          isActive: phase === 'battle'
-        }
-      })
-    }
-    
     // Handle devastation effects
-    if (battleData.devastation) {
+    if (battleData.invasion?.devastation && phase === 'battle') {
       elements.push({
         type: 'devastation',
-        position: battleData.devastation.position,
+        position: battleData.invasion.devastation.position,
         data: {
-          intensity: battleData.devastation.intensity,
-          isActive: phase === 'battle'
+          intensity: battleData.invasion.devastation.intensity,
+          isActive: true
         }
-      })
-    }
-
-    // Handle treasure/loot (for Nader Shah)
-    if (battleData.loot && phase === 'battle') {
-      elements.push({
-        type: 'treasure',
-        position: battleData.loot.position,
-        data: { isActive: true }
       })
     }
     
@@ -1835,7 +3746,7 @@ const BattleSequence: FC<{ event: any; isActive: boolean }> = ({ event, isActive
     
     return elements
   }
-  
+
   return (
     <>
       {/* Boundaries */}
@@ -1931,16 +3842,16 @@ export const InteractiveMap: FC<{ event: any; isSpeaking?: boolean }> = ({
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <MapContainer
+    <MapContainer
         center={event.animation?.center || [28, 77]}
         zoom={event.animation?.zoom || 5}
-        scrollWheelZoom={true}
+      scrollWheelZoom={true}
         className="w-full h-full bg-gray-900"
-        attributionControl={false}
-      >
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png" />
-        <MapResizer />
-        
+      attributionControl={false}
+    >
+      <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png" />
+      <MapResizer />
+
         <BattleSequence event={event} isActive={cinematicActive} />
       </MapContainer>
 
